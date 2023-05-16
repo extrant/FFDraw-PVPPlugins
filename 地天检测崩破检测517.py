@@ -20,7 +20,7 @@ class Radar(FFDrawPlugin):     #定义一个Radar
         if clicked:
             self.data['print_name'] = self.print_name
             self.storage.save()
-#赞美头子，大爱头子。鸣大钟三次，FFD乃真神也。速速加入FFD教会。
+
 #崩破检测
     def update(self, main):          
         view = main.gui.get_view()
@@ -44,6 +44,7 @@ class Radar(FFDrawPlugin):     #定义一个Radar
             main.gui.add_3d_shape(
                 0x10000,
                 glm.translate(pos),
+                surface_color=glm.vec4(0, 1, 0, .3),
                 point_color=glm.vec4(0, 1, 0, 1),
             )
 
@@ -60,15 +61,21 @@ class Radar(FFDrawPlugin):     #定义一个Radar
                     at=TextPosition.center_bottom
                 )
                 
+                
 
 #地天检测
         for actor in actor_table:
             pos = actor.pos
             if not actor.status.has_status(status_id=1240): continue
+            
             main.gui.add_3d_shape(
                 0x10000,
+                #(0x10000,
                 glm.translate(pos),
                 point_color=glm.vec4(1, 0, 0, .7),
+                line_color=glm.vec4(1, 0, 0, .7),
+                surface_color=glm.vec4(1, 0, 0, .3),
+                line_width=float(10.0),
             )
             if self.print_name:
                 text_pos, valid = view.world_to_screen(*pos)
@@ -80,15 +87,19 @@ class Radar(FFDrawPlugin):     #定义一个Radar
                     at=TextPosition.left_bottom
                 )
                 
-                
-#地天检测
+#天穹破碎(龙骑LB)检测
         for actor in actor_table:
             pos = actor.pos
             if not actor.status.has_status(status_id=3180): continue
+            
             main.gui.add_3d_shape(
                 0x10000,
+                #(0x10000,
                 glm.translate(pos),
-                point_color=glm.vec4(1, 0, 0, .7),
+                point_color=glm.vec4(0, 0, 1, .7),
+                line_color=glm.vec4(0, 0, 1, .7),
+                surface_color=glm.vec4(0, 0, 1, .3),
+                line_width=float(10.0),
             )
             if self.print_name:
                 text_pos, valid = view.world_to_screen(*pos)
@@ -96,10 +107,21 @@ class Radar(FFDrawPlugin):     #定义一个Radar
                 self.main.gui.render_text(
                     "天穹破碎",
                     (text_pos * glm.vec2(1, -1) + 1) * view.screen_size / 2,
-                    color=(1, 0, 0),
+                    color=(0, 0, 1),
                     at=TextPosition.left_bottom
                 )
                 
+                #赞美头子，大爱头子。鸣大钟三次，FFD乃真神也。速速加入FFD教会。
+                #指路：add_3d_shape部分
+                
+    #def add_3d_shape(self, shape: int, transform: glm.mat4, surface_color: glm.vec4 = None, line_color: glm.vec4 = None,
+    #                 line_width: float = 3.0, point_color: glm.vec4 = None, point_size: float = 5.0):
+    
+    
+    
+                #指路：原始Radar部分
+    
+    
 #    def update(self, main):         #遍历
 #        view = main.gui.get_view()    #获取窗口视角
 #        for actor in main.mem.actor_table:   #遍历游戏中的所有角色
@@ -118,3 +140,12 @@ class Radar(FFDrawPlugin):     #定义一个Radar
 #                    color=(1, 0, 1),    #紫色
 #                    at=TextPosition.center_bottom
 #                )
+
+                #指路：角色状态ID部分
+
+
+#case 'actor_has_status':
+#            return f'(int(main.mem.actor_table.get_actor_by_id({make_value(parser, value.get("id", 0), res, args)}).status.has_status({make_value(parser, value.get("status_id", 0), res, args)},{make_value(parser, value.get("source_id", 0), res, args)})))'
+
+#case 'actor_status_source':
+#            return f'(main.mem.actor_table.get_actor_by_id({make_value(parser, value.get("id", 0), res, args)}).status.find_status_source({make_value(parser, value.get("status_id", 0), res, args)}))'
