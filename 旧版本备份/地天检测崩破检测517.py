@@ -4,7 +4,7 @@ from ff_draw.plugins import FFDrawPlugin
 import imgui
 
 
-class Radar(FFDrawPlugin):     #定义一个Radar
+class PVPHelper(FFDrawPlugin):     #定义一个Radar
     def __init__(self, main):
         super().__init__(main)
         self.print_name = self.data.setdefault('print_name', True)
@@ -63,7 +63,7 @@ class Radar(FFDrawPlugin):     #定义一个Radar
                 
                 
 
-#地天检测
+#崩破检测
         for actor in actor_table:
             pos = actor.pos
             if not actor.status.has_status(status_id=1240): continue
