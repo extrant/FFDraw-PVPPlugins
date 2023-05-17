@@ -1,6 +1,6 @@
 # FFDraw>PVPTriggernometry
  A PVPTriggernometry For FFDraw
-
+<br>支持FFD喵 支持FFD谢谢喵
  我不会写MD，总之就是战场小玩具。
 <br>FFDRAW地址：https://github.com/nyaoouo/FFDraw
 
