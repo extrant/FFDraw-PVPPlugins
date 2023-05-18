@@ -1,22 +1,13 @@
-# FFDraw>PVPTriggernometry
- A PVPTriggernometry For FFDraw
+# FFDraw>PVPPlugin <img title="" src="https://raw.githubusercontent.com/extrant/IMGSave/main/2023/05/18-12-53-25-0f000e94f0e4fcb5430fb41fa0193cfc0239cd0e.png" alt="loading-ag-165" width="93">
 
- 我不会写MD，总之就是战场小玩具。
-<br>FFDRAW地址：https://github.com/nyaoouo/FFDraw
+> A PVPPlugin For FFDraw 
 
-地天绘制效果：
-<br><img src="https://media.discordapp.net/attachments/964422812464975892/1107708609313378434/e6ceb3d7f8d2b32d.png" width = "277" height = "211" div align=center />
- 
-最新建议使用地天检测崩破检测.py，使用radar检测。
-放到plugins目录下然后在PPDPanel启动就行。
+### 安装 >
 
+首先需要自行配置好FFDraw
 
-地天绘制效果：
+> [GitHub - nyaoouo/FFDraw: A Drawing Framework for ffxiv](https://github.com/nyaoouo/FFDraw)
 
-<br><img src="https://media.discordapp.net/attachments/888491076262981673/1107948077790273586/8b87c2a16f1f694f.png" width = "277" height = "211" div align=center />
+根据具头子给的食用方式安装好后，将本工程的<u>PVPHelper.py</u>放入<u>FFDraw</u>的<u>Plugin</u>文件夹下即可开始食用。
 
 
-崩坡效果：
-
-
-<br>显示谁中了自己的地天，紫色显示“斩杀”并且脚下显示一个绿圈。
