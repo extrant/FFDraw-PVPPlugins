@@ -1,4 +1,6 @@
-# FFDraw>PVPPlugin <img title="" src="https://raw.githubusercontent.com/extrant/IMGSave/main/2023/05/18-12-53-25-0f000e94f0e4fcb5430fb41fa0193cfc0239cd0e.png" alt="loading-ag-165" width="93">
+![logo.png](https://raw.githubusercontent.com/extrant/IMGSave/main/2023/05/18-15-54-09-logo.png)
+
+# FFDraw>PVPPlugin
 
 > A PVPPlugin For FFDraw 
 
@@ -121,5 +123,4 @@ case 'actor_has_status':
 
 case 'actor_status_source':
             return f'(main.mem.actor_table.get_actor_by_id({make_value(parser, value.get("id", 0), res, args)}).status.find_status_source({make_value(parser, value.get("status_id", 0), res, args)}))'
-
 ```
