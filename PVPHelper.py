@@ -2,6 +2,8 @@ import glm   #向量库
 from ff_draw.gui.text import TextPosition
 from ff_draw.plugins import FFDrawPlugin
 import imgui
+import math
+import numpy as np
 
 
 class PVPHelper(FFDrawPlugin):     #定义一个Radar
@@ -29,6 +31,26 @@ class PVPHelper(FFDrawPlugin):     #定义一个Radar
         imgui.text("2、崩破斩铁剑检测")
         imgui.text("3、龙骑天穹破碎检测")
         imgui.text_colored("注意！人多时会严重影响性能，请在非PVP区域关闭这个功能。", 1, 0, 0)
+        imgui.text_colored("注意！本组件为FFDraw插件且完全免费，如果想支持我就去", 1, 0, 0)
+        imgui.text_colored("discord找我请我喝杯奶茶 OAO ", 1, 0, 0)
+        
+                                        
+        
+        #imgui Test
+        #values = []
+        #for i in range(0, 100):
+        #    value = int(50 * math.cos(i * math.pi / 180.0 * 60))
+        #    value = min(max(value, 0), 255)
+        #    values.append(value)
+        #values_float = np.array(values, dtype=np.float32)
+        #imgui.plot_lines("Test0", values_float, len(values_float))
+        # 
+        #x = np.linspace(-1, 1, 500)
+        #y = np.linspace(-1, 1, 500)
+        #X, Y = np.meshgrid(x, y)
+        #Z = (X ** 2 + Y ** 2 - 1) ** 3 - X ** 2 * Y ** 3
+        #values_float = Z.astype(np.float32).flatten()
+        #imgui.plot_lines("Test1", values_float, len(values_float))
 
 #崩破检测
     def update(self, main):          
@@ -36,7 +58,7 @@ class PVPHelper(FFDrawPlugin):     #定义一个Radar
         actor_table = main.mem.actor_table
 
         # 遍历所有角色，检查是否有指定状态，并且状态来源为当前玩家角色
-        for actor in actor_table:
+        for actor in actor_table.iter_actor_by_type(1):#actor_table:
             pos = actor.pos
             if not actor.status.has_status(status_id=3202) or actor.status.find_status_source(status_id=3202) != main.mem.actor_table.me.id: 
                 continue
@@ -73,11 +95,11 @@ class PVPHelper(FFDrawPlugin):     #定义一个Radar
                 
 
 #地天检测
-        for actor in actor_table:
+        for actor in actor_table.iter_actor_by_type(1):#actor_table:
             pos = actor.pos
             if not actor.status.has_status(status_id=1240): continue
             
-            main.gui.add_3d_shape(
+            main.gui.add_3d_sshape(
                 0x10000,
                 #(0x10000,
                 glm.translate(pos),
@@ -97,7 +119,7 @@ class PVPHelper(FFDrawPlugin):     #定义一个Radar
                 )
                 
 #天穹破碎(龙骑LB)检测
-        for actor in actor_table:
+        for actor in actor_table.iter_actor_by_type(1):#actor_table:
             pos = actor.pos
             if not actor.status.has_status(status_id=3180): continue
             
