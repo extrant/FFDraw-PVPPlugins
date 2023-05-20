@@ -4,6 +4,8 @@
 
 > A PVPPlugin For FFDraw 
 
+重磅更新：增加[PVPHelperCombat]([GitHub - extrant/FFDraw-PVPPlugins: A PVPPlugin For FFDraw Discord：NicoCHANY#0020](https://github.com/extrant/FFDraw-PVPPlugins#PVPHelperCombat))，但需手动选择斩铁剑。
+
 ### 安装 >
 
 首先需要自行配置好FFDraw
@@ -11,6 +13,8 @@
 > [GitHub - nyaoouo/FFDraw: A Drawing Framework for ffxiv](https://github.com/nyaoouo/FFDraw)
 
 根据具头子给的食用方式安装好后，将本工程的<u>PVPHelper.py</u>放入<u>FFDraw</u>的<u>Plugin</u>文件夹下即可开始食用。
+
+将<u>PVPHelperCombat</u>文件夹放入<u>FFDraw</u>的<u>Plugin</u>文件夹下即可开始食用。
 
 ### 使用 >
 
@@ -43,6 +47,24 @@
 - [ ] 目前还未发现其他问题
 
 ![QQ图片20230518130717.gif](https://raw.githubusercontent.com/extrant/IMGSave/main/2023/05/18-13-24-07-QQ%E5%9B%BE%E7%89%8720230518130717.gif)
+
+### PVPHelperCombat>
+
+> 战场辅助工具
+
+在FFDPanel界面里找到PVPHelperCombat，启动即可。
+
+![](https://raw.githubusercontent.com/extrant/IMGSave/main/2023/05/20-22-21-16-2023-05-20-22-21-02-QQ%E6%88%AA%E5%9B%BE20230520221959.jpg)
+
+建议两个插件都启动。插件界面：
+
+![](https://raw.githubusercontent.com/extrant/IMGSave/main/2023/05/20-22-21-57-2023-05-20-22-21-53-QQ%E6%88%AA%E5%9B%BE20230520222023.jpg)
+
+使用方式：
+
+Enable启动，但是建议在LB时开启。
+
+与绘制原理一致，如果选中了有崩破的人。且如果这个人中的是你的崩破便会直接斩过去。由于PVPHelper会绿圈绘制崩破，所以直接选中被画了绿圈的人就可以了。
 
 ### 参考内容>
 
