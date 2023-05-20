@@ -99,7 +99,7 @@ class PVPHelper(FFDrawPlugin):     #定义一个Radar
             pos = actor.pos
             if not actor.status.has_status(status_id=1240): continue
             
-            main.gui.add_3d_sshape(
+            main.gui.add_3d_shape(
                 0x10000,
                 #(0x10000,
                 glm.translate(pos),

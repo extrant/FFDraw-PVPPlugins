@@ -38,6 +38,8 @@
   
   > 解决方式：for actor in actor_table.iter_actor_by_type(1):   仅筛选玩家
 
+- [x] ~~地天检测add_shape多打了一个s~~ 已经解决
+
 - [ ] 目前还未发现其他问题
 
 ![QQ图片20230518130717.gif](https://raw.githubusercontent.com/extrant/IMGSave/main/2023/05/18-13-24-07-QQ%E5%9B%BE%E7%89%8720230518130717.gif)
