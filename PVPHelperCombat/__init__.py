@@ -13,7 +13,7 @@ strategy_map = {}     #存储职业和是否为PvP状态
 
 
 
-def select_closest_enemy_with_status(m: CombatMem, status_id: int) -> Optional[Actor]:
+def select_closest_enemy_with_status(m: CombatMem, status_id: int) -> Optional[Actor]:   #选择器
     me = m.me
     return_actor: Optional[Actor] = None
     shortest_dist = float('inf')
