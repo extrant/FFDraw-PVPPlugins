@@ -4,7 +4,7 @@
 
 > A PVPPlugin For FFDraw 
 
-重磅更新：增加[PVPHelperCombat]([GitHub - extrant/FFDraw-PVPPlugins: A PVPPlugin For FFDraw Discord：NicoCHANY#0020](https://github.com/extrant/FFDraw-PVPPlugins#PVPHelperCombat))，但需手动选择斩铁剑。
+重磅更新：增加[PVPHelperCombat]([GitHub - extrant/FFDraw-PVPPlugins: A PVPPlugin For FFDraw Discord：NicoCHANY#0020](https://github.com/extrant/FFDraw-PVPPlugins#PVPHelperCombat))，自动选择斩铁剑。
 
 ### 安装 >
 
@@ -62,9 +62,19 @@
 
 使用方式：
 
-Enable启动，但是建议在LB时开启。
+Enable启动，但是建议在LB时开启。同时建议开启窗口置顶。
 
 与绘制原理一致，如果选中了有崩破的人。且如果这个人中的是你的崩破便会直接斩过去。由于PVPHelper会绿圈绘制崩破，所以直接选中被画了绿圈的人就可以了。
+
+2023/5/21更新：如果有人中的是你的崩破便自动选取最近的人斩铁剑。
+
+**但需要注意的是：**
+
+**1、不会判断斩铁剑是否就绪，默认是有人中了你的崩破便会斩铁剑。建议在LB时开启。**
+
+**2、不会判断盾值，我懒的写。**
+
+**3、斩之前需要选中任意目标。**
 
 ### 参考内容>
 

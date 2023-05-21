@@ -4,10 +4,34 @@ import glm   #向量库
 from .mem import CombatMem
 from ff_draw.main import FFDraw
 from ff_draw.plugins import FFDrawPlugin
+from ff_draw.mem.actor import Actor
+from glm import vec3
 #from ff_draw.plugins import FFDrawPlugin
-
+from typing import Optional
 
 strategy_map = {}     #存储职业和是否为PvP状态
+
+
+
+def select_closest_enemy_with_status(m: CombatMem, status_id: int) -> Optional[Actor]:
+    me = m.me
+    return_actor: Optional[Actor] = None
+    shortest_dist = float('inf')
+
+    for actor in m.mem.actor_table.iter_actor_by_type(1):
+        if not m.is_enemy(me, actor):
+            continue
+
+        if actor.status.has_status(status_id=status_id) and actor.status.find_status_source(status_id=status_id) == me.id:
+            dist = glm.distance(me.pos, actor.pos)
+            if dist < shortest_dist:
+                shortest_dist = dist
+                return_actor = actor
+
+    return return_actor
+
+
+
 
 
 def register_strategy(class_job_id, is_pvp=True):    #is_pvp默认值为False
@@ -34,21 +58,43 @@ def register_strategy(class_job_id, is_pvp=True):    #is_pvp默认值为False
 #    return m.action_state.use_action(3617, target.id)                   #打出 重斩
 
 @register_strategy(34)
-def samurai_pvp(m: CombatMem):
+def samurai_pvp(m: CombatMem, is_pvp=True):
     actor_table = m.mem.actor_table
     
     if (me := m.me) is None: return 4                                  
     if (target := m.targets.current) is None: return "无目标！"       
     if not m.is_enemy(me, target): return 6                           
     if m.action_state.stack_has_action: return "动作执行中"                      
-    gcd_remain = m.action_state.get_cool_down_by_action(3617).remain   
+    gcd_remain = m.action_state.get_cool_down_by_action(29537).remain   
     if gcd_remain > .5: return 8   
+    target_enemy = select_closest_enemy_with_status(m, 3202)
+    if target_enemy:
+        m.action_state.use_action(29537, target_enemy.id)
+    else:
+        return "非匹配条件目标"
+        pass
+        
+    #for actor in actor_table.iter_actor_by_type(1):#actor_table:
+        #pos = actor.pos
+        #if actor.status.has_status(status_id=3202) and actor.status.find_status_source(status_id=3202) == m.mem.actor_table.me.id:
+            #return m.action_state.use_action(29537, target.id)
 
-    for actor in actor_table.iter_actor_by_type(1):#actor_table:
-        pos = actor.pos
-        if actor.status.has_status(status_id=3202) and actor.status.find_status_source(status_id=3202) == m.mem.actor_table.me.id:
-            return m.action_state.use_action(29537, target.id)
-
+#@register_strategy(24)
+#def whm_test(m: CombatMem):
+#    actor_table = m.mem.actor_table
+#    
+#    if (me := m.me) is None: return 4                                  
+#    if (target := m.targets.current) is None: return "无目标！"       
+#    if not m.is_enemy(me, target): return 6                           
+#    if m.action_state.stack_has_action: return "动作执行中"                      
+#    gcd_remain = m.action_state.get_cool_down_by_action(3617).remain   
+#   if gcd_remain > .5: return 8   
+#    target_enemy = select_closest_enemy_with_status(m, 158)
+#    if target_enemy:
+#        m.action_state.use_action(3570, target_enemy.id)
+#    else:
+#        return "非匹配条件目标"
+#        pass
 
 class PVPCombatDemo(FFDrawPlugin):
     def __init__(self, main):
@@ -83,7 +129,7 @@ class PVPCombatDemo(FFDrawPlugin):
             self.float_kaiguan = False
             
         imgui.text(str(strategy_map))
-        
+        imgui.text(str(select_closest_enemy_with_status))
         imgui.text_colored("注意！正常情况下请在非PVP区域关闭这个功能。", 1, 0, 0)
         imgui.text_colored("注意！最好在有武士LB时开启这个功能。", 1, 0, 0)
         imgui.text_colored("注意！本组件为FFDraw插件且完全免费，如果想支持我就去", 1, 0, 0)
