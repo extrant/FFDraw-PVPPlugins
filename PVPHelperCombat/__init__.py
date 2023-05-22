@@ -13,20 +13,29 @@ strategy_map = {}     #存储职业和是否为PvP状态
 
 
 
-def select_closest_enemy_with_status(m: CombatMem, status_id: int) -> Optional[Actor]:   #选择器
+def select_closest_enemy_with_status(m: CombatMem, status_id: int) -> Optional[Actor]:   #武士斩铁剑选择器
     me = m.me
     return_actor: Optional[Actor] = None
     shortest_dist = float('inf')
-    not_status_ids = [3186, 3130, 3221, 3164, 3224, 3110, 3109, 3087, 3088, 3097, 3098, 3173]  #过滤id
+    not_status_ids = [3039, 2413, 1302, 150]  #过滤id   #测试150
+#盾类
     #风遁 3186    原初 3130     磁暴 3221     神秘纹 2861    刃舞 3164     守护之光 3224     血印 3110 均衡诊断 3109 鼓舞激励 3087 3088  大天使 3097 3098
-    #黑盾1308     魔三连3234 3235 3236   轻身步法 3173
+    #黑盾1308     魔三连3234 3235 3236   轻身步法 3173       天穹破碎3181
+#无敌类
+    #不死救赎 3039  被保护 2413  神圣领域 1302
     for actor in m.mem.actor_table.iter_actor_by_type(1):
         if not m.is_enemy(me, actor):
             continue
 
         if actor.status.has_status(status_id=status_id) and actor.status.find_status_source(status_id=status_id) == me.id:
-            if any(actor.status.has_status(status_id=not_id) for not_id in not_status_ids):
+            shield = actor.shield * actor.max_hp / 100
+            if any(actor.status.has_status(status_id=not_id) for not_id in not_status_ids):    # status_ids筛选
                 continue
+            if shield + actor.current_hp > actor.max_hp:#shield > 0:    # 盾值筛选
+                continue
+            
+            #if any(actor.status.has_status(status_id=not_id) for not_id in not_status_ids):
+            #    continue
             dist = glm.distance(me.pos, actor.pos)
             if dist < shortest_dist:
                 shortest_dist = dist

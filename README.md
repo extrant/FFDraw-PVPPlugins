@@ -6,9 +6,11 @@
 
 重磅更新：增加[PVPHelperCombat]([GitHub - extrant/FFDraw-PVPPlugins: A PVPPlugin For FFDraw Discord：NicoCHANY#0020](https://github.com/extrant/FFDraw-PVPPlugins#PVPHelperCombat))，自动选择斩铁剑。
 
-2023/5/22 更新：增加斩铁剑盾值过滤id，增加斩铁时选中敌人（变的更像绿玩一些
+2023/5/22 再次更新：增加斩铁剑盾值过滤，增加斩铁时选中敌人（变的更像绿玩一些
 
-    Tips：可以在源码中自行编辑想要过滤的id和去掉不想要过滤的id
+    Tips：可以在源码中自行编辑想要过滤的id和去掉不想要过滤的id，盾值id使用内置的盾值检测，不再通过Buff id检测。现在只过滤无敌状态和被保护状态。
+
+ 
 
 ### 安装 >
 
