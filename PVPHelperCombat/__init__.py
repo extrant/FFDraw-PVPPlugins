@@ -17,12 +17,16 @@ def select_closest_enemy_with_status(m: CombatMem, status_id: int) -> Optional[A
     me = m.me
     return_actor: Optional[Actor] = None
     shortest_dist = float('inf')
-
+    not_status_ids = [3186, 3130, 3221, 3164, 3224, 3110, 3109, 3087, 3088, 3097, 3098, 3173]  #过滤id
+    #风遁 3186    原初 3130     磁暴 3221     神秘纹 2861    刃舞 3164     守护之光 3224     血印 3110 均衡诊断 3109 鼓舞激励 3087 3088  大天使 3097 3098
+    #黑盾1308     魔三连3234 3235 3236   轻身步法 3173
     for actor in m.mem.actor_table.iter_actor_by_type(1):
         if not m.is_enemy(me, actor):
             continue
 
         if actor.status.has_status(status_id=status_id) and actor.status.find_status_source(status_id=status_id) == me.id:
+            if any(actor.status.has_status(status_id=not_id) for not_id in not_status_ids):
+                continue
             dist = glm.distance(me.pos, actor.pos)
             if dist < shortest_dist:
                 shortest_dist = dist
@@ -69,6 +73,7 @@ def samurai_pvp(m: CombatMem, is_pvp=True):
     if gcd_remain > .5: return 8   
     target_enemy = select_closest_enemy_with_status(m, 3202)
     if target_enemy:
+        m.targets.current = target_enemy  #选择目标
         m.action_state.use_action(29537, target_enemy.id)
     else:
         return "非匹配条件目标"
@@ -88,9 +93,11 @@ def samurai_pvp(m: CombatMem, is_pvp=True):
 #    if not m.is_enemy(me, target): return 6                           
 #    if m.action_state.stack_has_action: return "动作执行中"                      
 #    gcd_remain = m.action_state.get_cool_down_by_action(3617).remain   
-#   if gcd_remain > .5: return 8   
+#    if gcd_remain > .5: return 8   
 #    target_enemy = select_closest_enemy_with_status(m, 158)
+#    
 #    if target_enemy:
+#        m.targets.current = target_enemy
 #        m.action_state.use_action(3570, target_enemy.id)
 #    else:
 #        return "非匹配条件目标"

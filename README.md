@@ -6,6 +6,10 @@
 
 重磅更新：增加[PVPHelperCombat]([GitHub - extrant/FFDraw-PVPPlugins: A PVPPlugin For FFDraw Discord：NicoCHANY#0020](https://github.com/extrant/FFDraw-PVPPlugins#PVPHelperCombat))，自动选择斩铁剑。
 
+2023/5/22 更新：增加斩铁剑盾值过滤id，增加斩铁时选中敌人（变的更像绿玩一些
+
+    Tips：可以在源码中自行编辑想要过滤的id和去掉不想要过滤的id
+
 ### 安装 >
 
 首先需要自行配置好FFDraw
@@ -67,6 +71,8 @@ Enable启动，但是建议在LB时开启。同时建议开启窗口置顶。
 与绘制原理一致，如果选中了有崩破的人。且如果这个人中的是你的崩破便会直接斩过去。由于PVPHelper会绿圈绘制崩破，所以直接选中被画了绿圈的人就可以了。
 
 2023/5/21更新：如果有人中的是你的崩破便自动选取最近的人斩铁剑。
+
+2023/5/22 更新：增加斩铁剑过滤id，增加斩铁时选中敌人（变的更像绿玩一些
 
 **但需要注意的是：**
 
