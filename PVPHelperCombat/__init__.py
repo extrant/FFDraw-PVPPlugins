@@ -59,7 +59,7 @@ def select_closest_enemy_with_real_hp(m: CombatMem) -> Optional[Actor]:    #ењНи
         has_select_target = False  
         for status_id, param, remain, source_id in a.status:  
             if status_id in inv_status_ids: return False 
-            if real_hp <= a.max_hp * 0.48: 
+            if real_hp <= a.max_hp * 0.48 and real_hp >= a.max_hp * 0.2: 
                 has_select_target = True
         return has_select_target  
      
