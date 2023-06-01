@@ -32,7 +32,7 @@
 
 插件界面：
 
-![-3c949bdf6496674e.jpg](https://raw.githubusercontent.com/extrant/IMGSave/main/2023/05/18-13-08-17--3c949bdf6496674e.jpg)
+![](https://raw.githubusercontent.com/extrant/IMGSave/main/2023/06/01-13-24-31-2023-06-01-13-24-27-QQ%E6%88%AA%E5%9B%BE20230601132404.jpg)
 
 需要注意的是，关闭功能并不是关闭那个地天检测开关，而是在FFDraw这个标签栏里将PVPHelper关闭。
 
