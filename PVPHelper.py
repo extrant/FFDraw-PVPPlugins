@@ -156,7 +156,7 @@ class PVPHelper(FFDrawPlugin):     #定义一个Radar
                   
     #半血绘制       
         if self.show_for_hp:
-            for actor in actor_table:#.iter_actor_by_type(1):#actor_table:
+            for actor in actor_table.iter_actor_by_type(1):#actor_table:
                 pos = actor.pos
                 real_hp = actor.current_hp 
                 if real_hp >= actor.max_hp * 0.48: continue

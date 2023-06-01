@@ -110,6 +110,7 @@ def register_strategy(class_job_id, is_pvp=True):    #is_pvp默认值为False
 @register_strategy(34) #武士
 def samurai_pvp(m: CombatMem, is_pvp=True):
     actor_table = m.mem.actor_table
+    global last_target_time
     
     if (me := m.me) is None: return 4                                  
     if (target := m.targets.current) is None: return "无目标！"       
@@ -117,14 +118,16 @@ def samurai_pvp(m: CombatMem, is_pvp=True):
     if m.action_state.stack_has_action: return "动作执行中"                      
     gcd_remain = m.action_state.get_cool_down_by_action(29537).remain   
     if gcd_remain > .5: return 8   
+    current_time = time.time()
+    if current_time - last_target_time > 1:
+        target_enemy = select_closest_enemy_with_status(m, 3202)
     
-    target_enemy = select_closest_enemy_with_status(m, 3202)
-    if target_enemy:
-        m.targets.current = target_enemy  #选择目标
-        m.action_state.use_action(29537, target_enemy.id)
-    else:
-        return "非匹配条件目标"
-        pass
+        if target_enemy:
+            m.targets.current = target_enemy  #选择目标
+            m.action_state.use_action(29537, target_enemy.id)
+        else:
+            return "非匹配条件目标"
+            pass
         
     #for actor in actor_table.iter_actor_by_type(1):#actor_table:
         #pos = actor.pos
@@ -133,6 +136,7 @@ def samurai_pvp(m: CombatMem, is_pvp=True):
             
 @register_strategy(30) #忍者
 def ninjia_pvp(m: CombatMem, is_pvp=True):
+    global last_target_time
     actor_table = m.mem.actor_table
     
     if (me := m.me) is None: return 4                                  
@@ -141,15 +145,14 @@ def ninjia_pvp(m: CombatMem, is_pvp=True):
     if m.action_state.stack_has_action: return "动作执行中"                      
     gcd_remain = m.action_state.get_cool_down_by_action(2248).remain   
     if gcd_remain > .5: return 8   
-
-    target_enemy = select_closest_enemy_with_real_hp(m)
-    target_enemy2 = select_closest_enemy_with_status2(m)
-    if target_enemy:
-        m.targets.current = target_enemy  #选择目标
-         #m.action_state.use_action(29515, target_enemy.id)
+    current_time = time.time()
+    if current_time - last_target_time > 2:
+        target_enemy = select_closest_enemy_with_real_hp(m)
+        if target_enemy:
+            m.targets.current = target_enemy  #选择目标
+            last_target_time = current_time
     else:
         return "没有匹配的LB目标"
-        pass
         
     #if target_enemy2:
     #    m.targets.current = target_enemy2  #选择目标
@@ -200,6 +203,7 @@ class PVPCombatDemo(FFDrawPlugin):
             
         imgui.text(str(strategy_map))
         imgui.text(str(select_closest_enemy_with_status))
+        imgui.text_colored("注意！请开启raidhelper。", 1, 0, 0)
         imgui.text_colored("注意！正常情况下请在非PVP区域关闭这个功能。", 1, 0, 0)
         imgui.text_colored("注意！最好在有武士LB时开启这个功能。", 1, 0, 0)
         imgui.text_colored("注意！本组件为FFDraw插件且完全免费，如果想支持我就去", 1, 0, 0)
