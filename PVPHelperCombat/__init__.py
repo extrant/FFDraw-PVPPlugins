@@ -63,7 +63,7 @@ def select_closest_enemy_with_real_hp(m: CombatMem) -> Optional[Actor]:    #å¿è
                 has_select_target = True
         return has_select_target  
      
-    it = (actor for actor in m.mem.actor_table if target_validator(actor)) #m.mem.actor_table.iter_actor_by_type(1) if target_validator(actor)) 
+    it = (actor for actor in m.mem.actor_table.iter_actor_by_type(1) if target_validator(actor)) 
     k = lambda a: glm.distance(me_pos, a.pos) 
     selected = min(it, key=k, default=None)  
     if not selected or glm.distance(me_pos, selected.pos) > 15: return None  
