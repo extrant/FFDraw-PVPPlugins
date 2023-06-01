@@ -186,7 +186,7 @@ class PVPCombatDemo(FFDrawPlugin):
         imgui.same_line()
         imgui.text(f"Combat:{self.res}")
         #clicked, self.window_up = imgui.checkbox('Make Window Float', self.float_kaiguan)
-        
+        imgui.text("请启动RaidHelper插件")
         imgui.text("窗口置顶状态：")
         imgui.same_line()
         imgui.text_colored(f"状态:{self.float_kaiguan}", 1, 0, 0)
