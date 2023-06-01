@@ -11,6 +11,10 @@ class PVPHelper(FFDrawPlugin):     #定义一个Radar
         super().__init__(main)
         self.print_name = self.data.setdefault('print_name', True)
         self.show_imgui_window = True
+        self.show_for_ditian = True
+        self.show_for_bengpo = True
+        self.show_for_posui = True
+        self.show_for_hp = False
         
     def display_colored_text(text, r, g, b):
         imgui.text_colored(text, r, g, b)
@@ -25,6 +29,10 @@ class PVPHelper(FFDrawPlugin):     #定义一个Radar
         if clicked:
             self.data['print_name'] = self.print_name
             self.storage.save()
+        clicked, self.show_for_ditian = imgui.checkbox("地天绘制", self.show_for_ditian)
+        clicked, self.show_for_bengpo = imgui.checkbox("崩破绘制", self.show_for_bengpo)
+        clicked, self.show_for_posui = imgui.checkbox("天穹破碎绘制", self.show_for_posui)
+        clicked, self.show_for_hp = imgui.checkbox("半血绘制", self.show_for_hp)
         imgui.text("FFDrawPlugin-PVPHelper")
         imgui.text("支持功能：")
         imgui.text("1、地天检测")
@@ -53,96 +61,125 @@ class PVPHelper(FFDrawPlugin):     #定义一个Radar
         #imgui.plot_lines("Test1", values_float, len(values_float))
 
 #崩破检测
-    def update(self, main):          
+    def update(self, main):   
+        
         view = main.gui.get_view()
         actor_table = main.mem.actor_table
-
+        if self.show_for_bengpo:
         # 遍历所有角色，检查是否有指定状态，并且状态来源为当前玩家角色
-        for actor in actor_table.iter_actor_by_type(1):#actor_table:
-            pos = actor.pos
-            if not actor.status.has_status(status_id=3202) or actor.status.find_status_source(status_id=3202) != main.mem.actor_table.me.id: 
-                continue
-            
-            #if not actor.status.has_status(status_id=158) or actor.status.source_id != main.mem.actor_table.me.id: 
-            
-            #continue
-            
-            # 获取状态来源id，对比查看是否成功。目前没用。
-            source_id = actor.status.find_status_source(status_id=3202)
-            source_me = main.mem.actor_table.me.id
-            
-            # 绘制一个绿色的点
-            main.gui.add_3d_shape(
-                0x10000,
-                glm.translate(pos),
-                surface_color=glm.vec4(0, 1, 0, .3),
-                point_color=glm.vec4(0, 1, 0, 1),
-            )
-
-            # 显示斩杀提示
-            if self.print_name:
-                text_pos, valid = view.world_to_screen(*pos)
-                if not valid:
+            for actor in actor_table.iter_actor_by_type(1):#actor_table:
+                pos = actor.pos
+                if not actor.status.has_status(status_id=3202) or actor.status.find_status_source(status_id=3202) != main.mem.actor_table.me.id: 
                     continue
-                self.main.gui.render_text(
-                    #str(source_id),
-                    str("斩杀"),
-                    (text_pos * glm.vec2(1, -1) + 1) * view.screen_size / 2,
-                    color=(1, 0, 1),
-                    at=TextPosition.center_bottom
+                
+                #if not actor.status.has_status(status_id=158) or actor.status.source_id != main.mem.actor_table.me.id: 
+                
+                #continue
+                
+                # 获取状态来源id，对比查看是否成功。目前没用。
+                source_id = actor.status.find_status_source(status_id=3202)
+                source_me = main.mem.actor_table.me.id
+                
+                # 绘制一个绿色的点
+                main.gui.add_3d_shape(
+                    0x10000,
+                    glm.translate(pos),
+                    surface_color=glm.vec4(0, 1, 0, .3),
+                    point_color=glm.vec4(0, 1, 0, 1),
                 )
-                
-                
 
-#地天检测
-        for actor in actor_table.iter_actor_by_type(1):#actor_table:
-            pos = actor.pos
-            if not actor.status.has_status(status_id=1240): continue
-            
-            main.gui.add_3d_shape(
-                0x10000,
-                #(0x10000,
-                glm.translate(pos),
-                point_color=glm.vec4(1, 0, 0, .7),
-                line_color=glm.vec4(1, 0, 0, .7),
-                surface_color=glm.vec4(1, 0, 0, .3),
-                line_width=float(10.0),
-            )
-            if self.print_name:
-                text_pos, valid = view.world_to_screen(*pos)
-                if not valid: continue
-                self.main.gui.render_text(
-                    "地天答辩",
-                    (text_pos * glm.vec2(1, -1) + 1) * view.screen_size / 2,
-                    color=(1, 0, 0),
-                    at=TextPosition.left_bottom
-                )
+                # 显示斩杀提示
+                if self.print_name:
+                    text_pos, valid = view.world_to_screen(*pos)
+                    if not valid:
+                        continue
+                    self.main.gui.render_text(
+                        #str(source_id),
+                        str("斩杀"),
+                        (text_pos * glm.vec2(1, -1) + 1) * view.screen_size / 2,
+                        color=(1, 0, 1),
+                        at=TextPosition.center_bottom
+                    )
+                    
+        if self.show_for_ditian:
+
+    #地天检测
+            for actor in actor_table.iter_actor_by_type(1):#actor_table:
+                pos = actor.pos
+                if not actor.status.has_status(status_id=1240): continue
                 
-#天穹破碎(龙骑LB)检测
-        for actor in actor_table.iter_actor_by_type(1):#actor_table:
-            pos = actor.pos
-            if not actor.status.has_status(status_id=3180): continue
-            
-            scale_factor = glm.vec3(5.0, 5.0, 5.0)
-            main.gui.add_3d_shape(
-                0x10000,
-                #(0x10000,
-                glm.translate(pos) * glm.scale(scale_factor),
-                point_color=glm.vec4(0, 0, 1, .7),
-                line_color=glm.vec4(0, 0, 1, .7),
-                surface_color=glm.vec4(0, 0, 1, .3),
-                line_width=float(3.0),
-            )
-            if self.print_name:
-                text_pos, valid = view.world_to_screen(*pos)
-                if not valid: continue
-                self.main.gui.render_text(
-                    "天穹破碎",
-                    (text_pos * glm.vec2(1, -1) + 1) * view.screen_size / 2,
-                    color=(0, 0, 1),
-                    at=TextPosition.left_bottom
+                main.gui.add_3d_shape(
+                    0x10000,
+                    #(0x10000,
+                    glm.translate(pos),
+                    point_color=glm.vec4(1, 0, 0, .7),
+                    line_color=glm.vec4(1, 0, 0, .7),
+                    surface_color=glm.vec4(1, 0, 0, .3),
+                    line_width=float(10.0),
                 )
+                if self.print_name:
+                    text_pos, valid = view.world_to_screen(*pos)
+                    if not valid: continue
+                    self.main.gui.render_text(
+                        "地天答辩",
+                        (text_pos * glm.vec2(1, -1) + 1) * view.screen_size / 2,
+                        color=(1, 0, 0),
+                        at=TextPosition.left_bottom
+                    )
+                    
+        if self.show_for_posui:
+    #天穹破碎(龙骑LB)检测
+            for actor in actor_table.iter_actor_by_type(1):#actor_table:
+                pos = actor.pos
+                if not actor.status.has_status(status_id=3180): continue
                 
+                scale_factor = glm.vec3(5.0, 5.0, 5.0)
+                main.gui.add_3d_shape(
+                    0x10000,
+                    #(0x10000,
+                    glm.translate(pos) * glm.scale(scale_factor),
+                    point_color=glm.vec4(0, 0, 1, .7),
+                    line_color=glm.vec4(0, 0, 1, .7),
+                    surface_color=glm.vec4(0, 0, 1, .3),
+                    line_width=float(3.0),
+                )
+                if self.print_name:
+                    text_pos, valid = view.world_to_screen(*pos)
+                    if not valid: continue
+                    self.main.gui.render_text(
+                        "天穹破碎",
+                        (text_pos * glm.vec2(1, -1) + 1) * view.screen_size / 2,
+                        color=(0, 0, 1),
+                        at=TextPosition.left_bottom
+                    )
+                    
+                  
+    #半血绘制       
+        if self.show_for_hp:
+            for actor in actor_table:#.iter_actor_by_type(1):#actor_table:
+                pos = actor.pos
+                real_hp = actor.current_hp 
+                if real_hp >= actor.max_hp * 0.48: continue
+                #if not actor.status.has_status(status_id=3180): continue
+                
+                scale_factor = glm.vec3(.5, .5, .5)
+                main.gui.add_3d_shape(
+                    0x10000,
+                    #(0x10000,
+                    glm.translate(pos) * glm.scale(scale_factor),
+                    line_color=glm.vec4(1, 0, 1, .7),
+                    surface_color=glm.vec4(1, 0, 1, .3),
+                    line_width=float(3.0),
+                )
+                if self.print_name:
+                    text_pos, valid = view.world_to_screen(*pos)
+                    if not valid: continue
+                    self.main.gui.render_text(
+                        "半血HP",
+                        (text_pos * glm.vec2(1, -1) + 1) * view.screen_size / 2,
+                        color=(1, 0, 1),
+                        at=TextPosition.left_bottom
+                    )
                 
                 #指路：add_3d_shape部分
                 
