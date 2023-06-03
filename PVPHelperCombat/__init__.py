@@ -23,7 +23,7 @@ def select_closest_enemy_with_status(m: CombatMem, select_status_id: int) -> Opt
     me = m.me
     me_pos = me.pos  # 对位置进行缓存，每一次调用actor.pos都会进行一次内存读取，因此一帧内的逻辑中尽量缓存重复使用的数据
      
-    inv_status_ids = {3039, 2413, 1302, 150}  # 使用set查找“是否包括数据”比list更快
+    inv_status_ids = {3039, 2413, 1302, 1301}  # 使用set查找“是否包括数据”比list更快
      
     def target_validator(a: Actor) -> bool:  # 目标验证器
         if not m.is_enemy(me, a): return False  # 如果不是敌人，直接返回False
