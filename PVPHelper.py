@@ -29,6 +29,7 @@ class PVPHelper(FFDrawPlugin):     #定义一个Radar
         if clicked:
             self.data['print_name'] = self.print_name
             self.storage.save()
+        imgui.text_colored("请务必开启raidhelper", 1, 0, 0)
         clicked, self.show_for_ditian = imgui.checkbox("地天绘制", self.show_for_ditian)
         clicked, self.show_for_bengpo = imgui.checkbox("崩破绘制", self.show_for_bengpo)
         clicked, self.show_for_posui = imgui.checkbox("天穹破碎绘制", self.show_for_posui)
@@ -39,8 +40,7 @@ class PVPHelper(FFDrawPlugin):     #定义一个Radar
         imgui.text("2、崩破斩铁剑检测")
         imgui.text("3、龙骑天穹破碎检测")
         imgui.text_colored("注意！人多时会严重影响性能，请在非PVP区域关闭这个功能。", 1, 0, 0)
-        imgui.text_colored("注意！本组件为FFDraw插件且完全免费，如果想支持我就去", 1, 0, 0)
-        imgui.text_colored("discord找我请我喝杯奶茶 OAO ", 1, 0, 0)
+        imgui.text_colored("注意！本组件为FFDraw插件，作者为NicoCHANY。", 1, 0, 0)
         
                                         
         

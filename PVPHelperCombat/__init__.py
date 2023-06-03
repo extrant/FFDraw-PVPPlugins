@@ -202,7 +202,7 @@ class PVPCombatDemo(FFDrawPlugin):
         imgui.same_line()
         imgui.text(f"Combat:{self.res}")
         #clicked, self.window_up = imgui.checkbox('Make Window Float', self.float_kaiguan)
-        
+        imgui.text_colored("请务必开启raidhelper", 1, 0, 0)
         imgui.text("窗口置顶状态：")
         imgui.same_line()
         imgui.text_colored(f"状态:{self.float_kaiguan}", 1, 0, 0)
@@ -218,8 +218,8 @@ class PVPCombatDemo(FFDrawPlugin):
         imgui.text(str(select_closest_enemy_with_status))
         imgui.text_colored("注意！正常情况下请在非PVP区域关闭这个功能。", 1, 0, 0)
         imgui.text_colored("注意！最好在有武士LB时开启这个功能。", 1, 0, 0)
-        imgui.text_colored("注意！本组件为FFDraw插件且完全免费，如果想支持我就去", 1, 0, 0)
-        imgui.text_colored("discord找我请我喝杯奶茶 OAO ", 1, 0, 0)
+        imgui.text_colored("注意！本组件为FFDraw插件且完全免费，作者为NicoCHANY。", 1, 0, 0)
+        imgui.text_colored("有问题discord找我，支持FFD喵。", 1, 0, 0)
 
     
 
