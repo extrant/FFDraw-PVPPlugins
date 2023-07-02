@@ -16,7 +16,6 @@
 
     Tips：可以在源码中自行编辑想要过滤的id和去掉不想要过滤的id，盾值id使用内置的盾值检测，不再通过Buff id检测。现在只过滤无敌状态和被保护状态。
 
- https://discord.gg/HRahvu6HqJ
 
 ### 安装 >
 

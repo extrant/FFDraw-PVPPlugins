@@ -23,7 +23,7 @@ def direct_mem_property_set(self, instance, value):
 direct_mem_property.__set__ = direct_mem_property_set
 
 
-class CoolDown:                                                 #某个技能冷却状态，已过的冷却时间、技能 ID 
+class CoolDown:
     class offsets:
         used = 0x0
         action_id = 0x4
@@ -46,7 +46,7 @@ class CoolDown:                                                 #某个技能冷
         return (self.timer_max - self.timer) if self.used else 0
 
 
-class ActionState:                                              #当前动作状态，当前正在使用的技能 ID、技能冷却时间等。
+class ActionState:
     class offsets:
         combo_remain = 0x0
         combo_action = 0x4
@@ -54,7 +54,7 @@ class ActionState:                                              #当前动作状
         stack_action_type = 0xc
         stack_action_id = 0x10
         stack_target_id = 0x18
-        cd_arr = 0x114
+        cd_arr = 0x100
 
     def __init__(self, main: 'CombatMem'):
         self.main = main
@@ -88,7 +88,7 @@ class ActionState:                                              #当前动作状
         return CoolDown(self.handle, self.address + self.offsets.cd_arr + 0x14 * idx)
 
 
-class Targets:                                                  #用于描述游戏中的目标对象，包括当前目标、鼠标指向目标、焦点目标等。
+class Targets:
     def __init__(self, main: 'CombatMem'):
         self.main = main
         self.mem = main.mem
@@ -124,6 +124,43 @@ class Targets:                                                  #用于描述游
         ny_mem.write_ulonglong(self.handle, self.address + 0xF8, actor.address)
 
 
+class UseActionPos:
+    def __init__(self, main: 'CombatMem'):
+        self.main = main
+        self.mem = main.mem
+        self.address = self.mem.scanner.find_address("44 89 44 24 ? 89 54 24 ? 55 53 57")
+        self.p_action_manager, = self.mem.scanner.find_point("48 ? ? * * * * 89 5c 24 ? 4c ? ? 44")
+        self.main.main.logger.debug(f"UseActionPos address: {hex(self.address)}")
+        self.main.main.logger.debug(f"p_action_manager address: {hex(self.p_action_manager)}")
+
+    def __call__(self, action_id, pos, action_type=1):
+        # should return 1 if success
+        return self.mem.call_once_game_main(
+            f'from ctypes import *\n'
+            f'vec=(c_float * 3)({pos.x},{pos.y},{pos.z})\n'
+            f'res=CFUNCTYPE(c_uint8,c_void_p,c_uint,c_uint,c_uint64,c_uint64,c_uint)({self.address})({self.p_action_manager},{action_type},{action_id},0xe0000000,addressof(vec),0)'
+        )
+
+
+class LimitBreakGauge:
+    class offsets:
+        level_cap = 0x0
+        gauge = 0xa
+        gauge_one = 0xc
+        fine_play = 0xe
+        type = 0xf
+
+    def __init__(self, main: 'CombatMem'):
+        self.handle = main.handle
+        self.address, = main.mem.scanner.find_point("48 ? ? * * * * e8 ? ? ? ? 44 ? ? 85 ? 75 ? f3")
+
+    level_cap = direct_mem_property(ctypes.c_ubyte)
+    gauge = direct_mem_property(ctypes.c_ushort)
+    gauge_one = direct_mem_property(ctypes.c_ushort)
+    fine_play = direct_mem_property(ctypes.c_ubyte)
+    type = direct_mem_property(ctypes.c_ubyte)
+
+
 class CombatMem:
     _gauges = {}
 
@@ -135,6 +172,8 @@ class CombatMem:
         self._battalion_sheet = self.main.main.sq_pack.sheets.battalion_sheet
         self.action_state = ActionState(self)
         self.targets = Targets(self)
+        self.use_action_pos = UseActionPos(self)
+        self.limit_break_gauge = LimitBreakGauge(self)
 
     @property
     def me(self):
