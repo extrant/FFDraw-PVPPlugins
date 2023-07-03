@@ -2,6 +2,12 @@
 
 # FFDraw>PVPPlugin
 
+该项目仅供学习参考。如果你希望获得完整的，正在被维护的PVP功能进行使用，请进入Discord：
+
+https://discord.gg/HRahvu6HqJ
+
+包含免费项目，以及额外付费内容。因为收费以及倒卖的问题，现在采用了混淆手法对源码混淆。但是你可以在此项目获得没有被混淆的基本代码！
+
 > A PVPPlugin For FFDraw 
 
 重磅更新：增加[PVPHelperCombat]([GitHub - extrant/FFDraw-PVPPlugins: A PVPPlugin For FFDraw Discord：NicoCHANY#0020](https://github.com/extrant/FFDraw-PVPPlugins#PVPHelperCombat))，自动选择斩铁剑。
@@ -15,7 +21,6 @@
 2023/6/4   更新：增加机器码验证，修正被保护ID
 
     Tips：可以在源码中自行编辑想要过滤的id和去掉不想要过滤的id，盾值id使用内置的盾值检测，不再通过Buff id检测。现在只过滤无敌状态和被保护状态。
-
 
 ### 安装 >
 
