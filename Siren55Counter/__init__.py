@@ -1,8 +1,8 @@
 import enum
 import time
-
+#导入time包用于进行时间运算
 import imgui
-
+# Imgui绘制
 from nylib.utils.imgui.window_mgr import Window
 from .mem import CombatMem
 from ff_draw.gui.default_style import set_style, pop_style
@@ -14,7 +14,7 @@ from ff_draw.sniffer.message_structs.zone_server import ActionEffect
 
 #source_id = 0
 #action_id = 0
-enemy_actors = []
+enemy_actors = []    #敌人的列表
 #赤魔  90s  29704
 #技工  90s  29415
 #黑魔  60s  29662
@@ -37,6 +37,7 @@ enemy_actors = []
 
 #Map ID：角力学校：1032-1058     火山之心：1033-1059     九霄云上：1034-1060     机关大殿：1116-1117
 Test技能 = [3570, 7433]
+叁拾秒技能 = [29056, 29054]
 陆拾秒LB = [29662, 29230, 29673, 29678, 29130]
 玖拾秒LB = [29704, 29415, 29432, 29237, 29083, 29499]
 壹佰零伍秒LB = [29255, 29515, 29097]
@@ -75,7 +76,7 @@ class Siren55Counter(FFDrawPlugin):
         self.cooldowns = {}  
         self.cooldowns_to_remove = []  
         self.window = None
-
+        self.show_record = True
     def on_unload(self):
         try:
             self.window.window.close()
@@ -87,7 +88,6 @@ class Siren55Counter(FFDrawPlugin):
         print(str(msg.message.action_id))
         
     def on_effect(self, evt: NetworkMessage[ActionEffect]):
-        #global source_id, action_id
         data = evt.message
         source_id = evt.header.source_id
         source = self.main.mem.actor_table.get_actor_by_id(source_id).name
@@ -96,7 +96,7 @@ class Siren55Counter(FFDrawPlugin):
         action_id = data.action_id
         action = self.main.sq_pack.sheets.action_sheet[action_id]
         #print("人物ID：" + str(source) + "  " + "技能ID：" + str(action_id) + "  " + str(action) + "  " + str(class_job))        
-        if source_id in enemy_actors and action_id in Test技能:
+        if source_id in enemy_actors and action_id in 叁拾秒技能:
             cooldown = 30 
             self.cooldowns[(source_id, action_id)] = {
                 'cooldown_time': time.time() + cooldown,
@@ -130,19 +130,32 @@ class Siren55Counter(FFDrawPlugin):
                 'cooldown_time': time.time() + cooldown,
                 'name': source,
                 'class_job': class_job
-            }            
+            }   
+        if source_id in enemy_actors and action_id == 29553:
+            cooldown = 75
+            self.cooldowns[(source_id, action_id)] = {
+                'cooldown_time': time.time() + cooldown,
+                'name': source,
+                'class_job': class_job
+            }               
     def update(self, main):
         global enemy_actors
-        me = self.main.mem.actor_table.me
-        enemy_actors.clear()
-        if me is None:
+        if self.show_record is False:
             enemy_actors.clear()
-            return False
-        if self.main.mem.territory_info.map_id not in 伍伍对战区域:
-            return False
-        for actor in self.main.mem.actor_table.iter_actor_by_type(1):
-            if self.mem.is_enemy(me, actor):
-                enemy_actors.append(actor.id)
+        if self.show_record is True:
+            me = self.main.mem.actor_table.me
+            enemy_actors.clear()
+            #enemy_actors.append(me.id)
+            if me is None:
+                enemy_actors.clear()
+                return False
+            if self.show_record is False:
+                return False
+            #if self.main.mem.territory_info.map_id not in 伍伍对战区域:
+            #    return False
+            for actor in self.main.mem.actor_table.iter_actor_by_type(1):
+                if self.mem.is_enemy(me, actor):
+                    enemy_actors.append(actor.id)
 
     def _draw_panel(self):
         #imgui.text(str(enemy_actors))
@@ -154,13 +167,15 @@ class Siren55Counter(FFDrawPlugin):
                 class_job = cooldown_data['class_job']
                 class_job_name = self.get_class_job_name(class_job)
                 remaining_time = round(remaining_time, 0)
-                imgui.text("技能ID：" + str(action_id) + " 剩余冷却时间：" + str(remaining_time) +
+                action_name = self.get_action_name(action_id)
+                imgui.text("技能：" + str(action_name) + " 剩余冷却时间：" + str(remaining_time) +
                            " 来源：" + source_name + " 职业：" + class_job_name)
             else:
                 source_name = cooldown_data['name']
                 class_job = cooldown_data['class_job']
                 class_job_name = self.get_class_job_name(class_job)
-                self.main.mem.do_text_command("/e " + "技能ID：" + str(action_id) + " LB冷却已完成" +
+                action_name = self.get_action_name(action_id)
+                self.main.mem.do_text_command("/e " + "技能：" + str(action_name) + " LB冷却已完成" +
                            " 来源：" + source_name + " 职业：" + class_job_name + "<se.3><se.1><se.5>")
                 self.cooldowns_to_remove.append((source_id, action_id))  # 将需要删除的项添加到临时列表中
 
@@ -187,7 +202,7 @@ class Siren55Counter(FFDrawPlugin):
                     self.window.window.close()
                 except:
                     pass
-                    
+        clicked, self.show_record = imgui.checkbox("LB记录", self.show_record)                    
         if self.window is None:
             self._draw_panel()
     def get_class_job_name(self, class_job):
@@ -212,3 +227,29 @@ class Siren55Counter(FFDrawPlugin):
             40: "贤者"
         }
         return class_job_mapping.get(class_job, "")  
+        
+    def get_action_name(self, action_id):
+        action_mapping = {
+            29056: "净化",
+            29054: "防御",
+            29662: "灵魂共鸣",
+            29230: "涤罪之心",
+            29673: "龙神召唤",
+            29678: "不死鸟召唤",
+            29130: "连续剑",
+            29704: "南天十字",
+            29415: "魔弹射手",
+            29432: "行列舞",
+            29237: "炽天召唤",
+            29083: "原初的怒号",
+            29499: "天穹破碎",
+            29255: "星河漫天",
+            29515: "星遁天诛",
+            29097: "夜昏",
+            29401: "英雄的幻想曲",
+            29266: "中庸之道",
+            29537: "斩铁剑",
+            29553: "暗夜游魂",
+            29069: "列阵"          
+        }
+        return action_mapping.get(action_id, "")  
