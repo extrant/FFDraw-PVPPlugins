@@ -12,17 +12,45 @@ try:
     from .mem import CombatMem
     from plugins.raid_helper import RaidHelper
     import nylib.utils.imgui.ctx as imgui_ctx
+    from fpt4.utils.sqpack.utils import icon_path
 except ImportError:
     print("警告：你的插件可能从小店获取！或者说你没有正确安装SirenPVP！")
     print("如果是从小店获取，请退款并自行寻找正确版本！")    
 actors_by_battalion = {}
 result_list = []
 result_dict = {}
+mark_dict = {}
+mark_list = []
 show_battalion_1 = False
 show_battalion_2 = False
 show_battalion_3 = False
 flash_time = 5.0
 radar = False
+
+
+target_icon_attack_1 = 61201
+target_icon_bind_1 = 61211
+target_icon_stop_1 = 61221
+target_icon_square = 61231  # square, circle,cross,triangle
+target_icons = [
+    target_icon_attack_1 + 0,  # attack 1
+    target_icon_attack_1 + 1,  # attack 2
+    target_icon_attack_1 + 2,  # attack 3
+    target_icon_attack_1 + 3,  # attack 4
+    target_icon_attack_1 + 4,  # attack 5
+    target_icon_bind_1 + 0,  # bind 1
+    target_icon_bind_1 + 1,  # bind 2
+    target_icon_bind_1 + 2,  # bind 3
+    target_icon_stop_1 + 0,  # stop 1
+    target_icon_stop_1 + 1,  # stop 2
+    target_icon_square,  # square
+    target_icon_square + 1,  # circle
+    target_icon_square + 2,  # cross
+    target_icon_square + 3,  # triangle
+    target_icon_attack_1 + 5,  # attack 6
+    target_icon_attack_1 + 6,  # attack 7
+    target_icon_attack_1 + 7,  # attack 8
+]
 class PVPHelper(FFDrawPlugin):
     def __init__(self, main):    
         super().__init__(main)
@@ -50,7 +78,7 @@ class PVPHelper(FFDrawPlugin):
             if elapsed_time < 1.0:
                 time.sleep(flash_time - elapsed_time)       
     def update(self, main):
-        global send_success, actors_by_battalion, result_list, result_dict, radar, show_battalion_1, show_battalion_2, show_battalion_3, flash_time
+        global send_success, actors_by_battalion, result_list, result_dict, radar, show_battalion_1, show_battalion_2, show_battalion_3, flash_time, target_icons, mark_dict, mark_list
         hw = 0
         ss = 0
         hh = 0
@@ -81,6 +109,8 @@ class PVPHelper(FFDrawPlugin):
                 if clicked:
                     result_list = []  
                     result_dict = {}
+                    mark_dict = {}
+                    mark_list = []
                 #result_str = "\n".join([f"Actor: {id_name}, Battalion Key: {battalion_key}" for id_name, battalion_key in result_list])
                 #imgui.text(result_str) 
                 imgui.same_line()
@@ -128,24 +158,42 @@ class PVPHelper(FFDrawPlugin):
                                         self.main.gui.game_image.icon_image(level_score,15,20)           #3:4                           
                                         imgui.next_column()
                                 imgui.columns(1)    
-                        with imgui.begin_tab_item('焦点目标情报') as item4:
+                        with imgui.begin_tab_item('头顶标记情报') as item4:
                             if item4.selected:
-                                imgui.text("todo")                    
+                                for id_id, icon_id, id_home in mark_list:
+                                    imgui.text(f"名称: {id_id}@{self.get_home_world_name(id_home)}")   
+                                    imgui.same_line()
+                                    self.main.gui.game_image.icon_image(icon_id,20,20)                                     
 
         if radar is True:
             #imgui.text("Test")
             view = main.gui.get_view()
             actor_table = main.mem.actor_table
             me = main.mem.actor_table.me
-            if me is None: return False             
+            if me is None: return False  
+
+            target_icon_map = {}
+            for i, icon_id in enumerate(target_icons):
+                if target_id := self.main.mem.marking.head_mark_target(i + 1):
+                    target_icon_map[target_id] = icon_id
+
             for actor in actor_table.iter_actor_by_type(1):
-                id_name = actor.name
+                id_name = actor.name                                
                 class_job = actor.class_job
                 class_job_name = self.get_class_job_name(class_job)
                 class_job_icon = 62000 + class_job
                 status = actor.status
                 plugin = self.main.plugins.get("raid_helper/RaidHelper")
                 battalion_key = plugin.get_battalion_key(actor, 0)
+
+                if icon_id := target_icon_map.get(actor.id):
+                    id_id = actor.name
+                    id_home = actor.home_world
+                    #id_id_name = self.main.mem.actor_table.get_actor_by_id(source_id).name
+                    if icon_id in mark_dict:
+                        mark_dict[icon_id] = (id_id, icon_id, id_home)
+                    else:
+                        mark_dict[icon_id] = (id_id, icon_id, id_home)
                 
                 Level1 = actor.status.has_status(status_id=2131)
                 Level2 = actor.status.has_status(status_id=2132)
@@ -181,9 +229,9 @@ class PVPHelper(FFDrawPlugin):
 
 
             result_list = list(result_dict.values())
-                
+            mark_list = list(mark_dict.values())    
     def draw_panel(self):
-        global result_list, show_battalion_1, show_battalion_2, show_battalion_3, flash_time, result_dict
+        global result_list, show_battalion_1, show_battalion_2, show_battalion_3, flash_time, result_dict, mark_dict, mark_list
         hw = 0
         ss = 0
         hh = 0
@@ -192,6 +240,8 @@ class PVPHelper(FFDrawPlugin):
         if clicked:
             result_list = []  
             result_dict = {}
+            mark_dict = {}
+            mark_list = []
         #result_str = "\n".join([f"Actor: {id_name}, Battalion Key: {battalion_key}" for id_name, battalion_key in result_list])
         #imgui.text(result_str) 
         imgui.same_line()
@@ -240,9 +290,12 @@ class PVPHelper(FFDrawPlugin):
                                 self.main.gui.game_image.icon_image(level_score,15,20)           #3:4                           
                                 imgui.next_column()
                         imgui.columns(1)    
-                with imgui.begin_tab_item('焦点目标情报') as item4:
+                with imgui.begin_tab_item('头顶标记情报') as item4:
                     if item4.selected:
-                        imgui.text("todo")
+                        for id_id, icon_id , id_home in mark_list:
+                            imgui.text(f"名称: {id_id}@{self.get_home_world_name(id_home)}") 
+                            imgui.same_line()
+                            self.main.gui.game_image.icon_image(icon_id,20,20)    
 
 
 
@@ -269,3 +322,39 @@ class PVPHelper(FFDrawPlugin):
             40: "贤者"
         }
         return class_job_mapping.get(class_job, "")  
+        
+        
+        
+        
+    def get_home_world_name(self, id_home):
+        home_world_mapping = {
+            1074: "水晶塔",
+            1050: "银泪湖",
+            1048: "太阳海岸",
+            1057: "伊修加德",
+            1056: "红茶川",
+            1043: "紫水栈桥",
+            1069: "延夏",
+            1106: "静语庄园",
+            1045: "摩杜纳",
+            1177: "海猫茶屋",
+            1178: "柔风海湾",
+            1179: "琥珀原",
+            1170: "潮风亭",
+            1171: "神拳痕",
+            1172: "白银乡",
+            1076: "白金幻象",
+            1113: "旅人栈桥",
+            1121: "拂晓之间",
+            1166: "龙巢神殿",
+            1176: "梦羽宝境",
+            1042: "拉诺西亚",
+            1044: "幻影群岛",
+            1081: "神意之地",
+            1060: "萌芽池",
+            1067: "红玉海",
+            1173: "宇宙和音",
+            1174: "沃仙曦染",
+            1175: "晨曦王座"
+        }
+        return home_world_mapping.get(id_home, "")          
