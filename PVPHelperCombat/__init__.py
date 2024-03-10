@@ -198,12 +198,11 @@ class PVPCombatDemo(FFDrawPlugin):
         self.show_xuanren = False
         self.show_hack = False
         self.float_kaiguan = False
-        register = Register()
 
 
 
 
-        if (not register.checkAuthored()): self.enable_kaiguan = 0
+        #if (not register.checkAuthored()): self.enable_kaiguan = 1
         self.listener = keyboard.Listener(on_press=self.on_press)
 
         # create and start the listener thread
@@ -320,14 +319,7 @@ class PVPCombatDemo(FFDrawPlugin):
             imgui.text_colored("注意！正常情况下请在非PVP区域关闭这个功能。", 1, 0, 0)
             imgui.text_colored("注意！最好在有武士LB时开启这个功能。", 1, 0, 0)
             imgui.text_colored("注意！本组件为FFDraw插件且完全免费，作者为NicoCHANY。", 1, 0, 0)
-            imgui.text_colored("有问题discord找我，支持FFD喵。", 1, 0, 0)
-            imgui.text("红名名单：")
-            imgui.text("百战锻铸@海猫茶屋")
-            # update imgui window and handle events
-        #imgui.render()
-        #glfw.poll_events()
-        #if glfw.window_should_close(window):
-        #    break
+
 
     def slider_callback(value):
         global delay_slider_value
